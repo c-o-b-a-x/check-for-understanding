@@ -28,6 +28,18 @@ function handleFileSelect(event) {
 
   reader.readAsText(file);
 }
+fetch("/example.json")
+  .then((res) => res.json())
+  .then((data) => {
+    document.getElementById("Example").textContent = JSON.stringify(
+      data,
+      null,
+      2
+    );
+  })
+  .catch(() => {
+    document.getElementById("Example").textContent = "Failed to load JSON file";
+  });
 
 // Theme toggle functionality
 function setCookie(name, value, days = 365) {
