@@ -1,0 +1,193 @@
+/* ===== BASE BODY ===== */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #0f172a;
+  color: #e5e7eb;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ===== MAIN ===== */
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* ===== CARD ===== */
+.card {
+  background-color: #020617;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 0 auto 20px;
+  max-width: 400px;
+}
+
+/* ===== INPUTS / BUTTONS ===== */
+input,
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+input {
+  background-color: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+
+button {
+  background-color: #38bdf8;
+  color: #020617;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0ea5e9;
+}
+
+/* ===== ROOM LIST ===== */
+.room-list {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.room-item {
+  background-color: #020617;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.room-info {
+  flex: 1;
+}
+
+.room-actions button {
+  margin-left: 5px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background-color: #020617;
+  padding: 10px 0;
+  border-top: 1px solid #334155;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.github-logo {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
+}
+
+.github-link:hover {
+  opacity: 0.8;
+}
+
+/* =========================
+   LIGHT THEME OVERRIDES
+   ========================= */
+body.light {
+  background-color: #f8fafc;
+  color: #020617;
+}
+
+body.light .card,
+body.light .room-item,
+body.light input,
+body.light .footer {
+  background-color: #ffffff;
+  color: #020617;
+  border-color: #cbd5e1;
+}
+
+body.light input {
+  border: 1px solid #94a3b8;
+}
+
+body.light button {
+  background-color: #0ea5e9;
+  color: #ffffff;
+}
+
+body.light button:hover {
+  background-color: #0284c7;
+}
+
+body.light .github-logo {
+  filter: invert(0);
+}
+
+/* =========================
+   DARK THEME (explicit)
+   ========================= */
+body.dark {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #334155;
+}
+
+#themeToggle {
+  width: auto;
+  padding: 8px 12px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+pre {
+  background: #020617;
+  padding: 10px;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow: auto;
+  font-size: 13px;
+}
+
+#fileInput {
+  padding: 5px;
+  margin-right: 5px;
+}
+
+body.light #output {
+  background-color: white;
+  color: black;
+  border: 1px solid #334155;
+}

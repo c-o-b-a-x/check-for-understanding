@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <div class="card">
+        <h1>Join Quiz</h1>
+
+        <input id="roomCode" placeholder="Room Code" />
+        <input id="username" placeholder="Username" />
+        <div class="room-list">
+          <h2>Active Rooms</h2>
+          <ul id="rooms"></ul>
+        </div>
+
+        <button id="joinBtn">Join Room</button>
+
+        <div id="error" class="error hidden"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>Developed By Coby Hughes</p>
+        <a
+          href="https://github.com/c-o-b-a-x"
+          target="_blank"
+          class="github-link"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+            alt="GitHub Logo"
+            class="github-logo"
+          />
+        </a>
+      </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
+</html>

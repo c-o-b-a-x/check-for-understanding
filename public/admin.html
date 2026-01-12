@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+
+  <body>
+    <header class="top-bar">
+      <h1>Admin Dashboard</h1>
+      <button id="themeToggle">🌙</button>
+    </header>
+
+    <main class="dashboard">
+      <section class="card">
+        <h3>Create Room</h3>
+        <input id="roomName" placeholder="Room Name (optional)" />
+        <input id="roomCode" placeholder="Room Code (optional)" />
+        <button id="createRoomBtn">Create Room</button>
+        <div id="error" class="error hidden"></div>
+      </section>
+
+      <section class="card">
+        <h3>Upload Quiz JSON</h3>
+        <input type="file" id="fileInput" accept=".json" />
+        <pre id="output"></pre>
+      </section>
+
+      <section class="room-list card">
+        <h3>Active Rooms</h3>
+        <ul id="rooms"></ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>Developed by Coby Hughes</p>
+        <a
+          href="https://github.com/c-o-b-a-x"
+          target="_blank"
+          class="github-link"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+            alt="GitHub Logo"
+            class="github-logo"
+          />
+        </a>
+      </div>
+    </footer>
+
+    <script src="js/admin.js"></script>
+  </body>
+</html>

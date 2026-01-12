@@ -1,0 +1,34 @@
+{
+  "quiz": [
+    {
+      "id": 1,
+      "question": "Question text goes here",
+      "choices": {
+        "correct": "Correct answer text",
+        "wrong1": "Wrong answer text",
+        "wrong2": "Wrong answer text",
+        "wrong3": "Wrong answer text"
+      }
+    },
+    {
+      "id": 2,
+      "question": "Question text goes here",
+      "choices": {
+        "correct": "Correct answer text",
+        "wrong1": "Wrong answer text",
+        "wrong2": "Wrong answer text",
+        "wrong3": "Wrong answer text"
+      }
+    },
+    {
+      "id": 3,
+      "question": "Question text goes here",
+      "choices": {
+        "correct": "Correct answer text",
+        "wrong1": "Wrong answer text",
+        "wrong2": "Wrong answer text",
+        "wrong3": "Wrong answer text"
+      }
+    }
+  ]
+}
