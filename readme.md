@@ -23,11 +23,11 @@ server side
 - display multiple chose answers from json file
 - room names
 - room codes (if none provided defualt to CMP)
-- dark and light mode selects
 
 Done:
 
 - Json Upload
+- dark and light mode selects(saves via a cookie)
 
 Alternate approach for data sending:
 

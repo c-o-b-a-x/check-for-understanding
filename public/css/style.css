@@ -42,6 +42,7 @@ input {
   background-color: #020617;
   color: #e5e7eb;
   border: 1px solid #334155;
+  width: 95%;
 }
 
 button {
@@ -190,4 +191,25 @@ body.light pre {
   background-color: white;
   color: black;
   border: 1px solid #334155;
+}
+
+#joinBtn {
+  margin: 10px auto;
+  width: 25%;
+  display: flex;
+  justify-content: center;
+}
+
+.Right {
+  margin-left: 15px;
+  width: auto;
+  color: green;
+}
+.Wrong {
+  margin-left: 15px;
+  width: auto;
+  color: red;
+}
+.hidden {
+  display: none;
 }

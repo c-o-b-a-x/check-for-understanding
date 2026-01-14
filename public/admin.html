@@ -21,6 +21,114 @@
         <button id="createRoomBtn">Create Room</button>
         <div id="error" class="error hidden"></div>
       </section>
+      <section class="card">
+        <h3>Create A Quiz</h3>
+        <h3>Inputs</h3>
+        <div id="quizInputs">
+          <input type="text" class="question" placeholder="Question 1" />
+          <br />
+          <input
+            type="text"
+            name="Right Answer"
+            id="rightAnswer"
+            class="Right"
+            placeholder="Right Answer"
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer1"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer2"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            id="wrongAnswer3"
+            class="Wrong"
+            placeholder="Wrong Answer"
+          />
+          <input type="text" class="question" placeholder="Question 2" />
+          <br />
+          <input
+            type="text"
+            name="Right Answer"
+            id="rightAnswer2"
+            class="Right"
+            placeholder="Right Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer4"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer "
+            class="Wrong"
+            id="wrongAnswer5"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer6"
+            placeholder="Wrong Answer "
+          />
+
+          <input type="text" class="question" placeholder="Question 3" />
+          <br />
+          <input
+            type="text"
+            name="Right Answer"
+            id="rightAnswer3"
+            class="Right"
+            placeholder="Right Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer7"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            class="Wrong"
+            id="wrongAnswer8"
+            placeholder="Wrong Answer "
+          />
+          <br />
+          <input
+            type="text"
+            name="Wrong Answer"
+            id="wrongAnswer9"
+            class="Wrong"
+            placeholder="Wrong Answer "
+          />
+          <pre class="hidden" id="written"></pre>
+        </div>
+        <button id="createQuizBtn">Create Quiz</button>
+      </section>
 
       <section class="card">
         <h3>Upload Quiz JSON</h3>
@@ -30,17 +138,12 @@
         <h3>Example JSON</h3>
         <pre id="Example"></pre>
       </section>
-
-      <section class="room-list card">
-        <h3>Active Rooms</h3>
-        <ul id="rooms"></ul>
-      </section>
     </main>
 
     <footer class="footer">
       <div class="footer-content">
         <p>Developed by Coby Hughes</p>
-        <a
+        
           href="https://github.com/c-o-b-a-x"
           target="_blank"
           class="github-link"
@@ -54,6 +157,10 @@
       </div>
     </footer>
 
+    <!-- ADD THIS LINE - Socket.IO client library MUST come first -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Your admin.js comes after -->
     <script src="js/admin.js"></script>
   </body>
 </html>
