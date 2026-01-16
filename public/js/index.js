@@ -1,22 +1,107 @@
-const join_btn = document.getElementById("join_btn");
-const room_code_input = document.getElementById("room_code_input");
+const socket = io();
 
-join_btn.addEventListener("click", () => {
-  const roomCode = room_code_input.value.trim();
-  if (roomCode) {
-    socket.emit("join_room", roomCode);
-  } else {
-    alert("Please enter a room code.");
+const joinBtn = document.getElementById("join_btn");
+const roomInput = document.getElementById("room_code_input");
+const gameArea = document.getElementById("game");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const statusEl = document.getElementById("status");
+
+let currentRoom = null;
+let hasAnswered = false;
+
+/* =====================
+   JOIN ROOM
+===================== */
+
+joinBtn.addEventListener("click", () => {
+  const roomCode = roomInput.value.trim();
+  if (!roomCode) {
+    alert("Enter a room code");
+    return;
   }
+
+  const username = document.getElementById("username").value.trim();
+  if (!username) {
+    alert("Name required");
+    return;
+  }
+
+  socket.emit("join_room", { roomCode, username });
 });
 
 socket.on("room_joined", (roomCode) => {
-  console.log(`Joined room: ${roomCode}`);
-  socket.emit("start_quiz", roomCode);
+  currentRoom = roomCode;
+  statusEl.textContent = `Joined room ${roomCode}. Waiting for quiz to start...`;
 });
 
-// Expose functions globally for use in HTML
-window.startQuiz = startQuiz;
-window.joinQuizRoom = joinQuizRoom;
-window.submitAnswer = submitAnswer;
-window.downloadQuizData = downloadQuizData;
+/* =====================
+   QUIZ FLOW
+===================== */
+
+socket.on("quizStarted", ({ totalQuestions }) => {
+  statusEl.textContent = `Quiz started! (${totalQuestions} questions)`;
+});
+
+socket.on("question", ({ question, options, questionNumber }) => {
+  console.log("✅ question received:", { question, options, questionNumber });
+  hasAnswered = false;
+  gameArea.style.display = "block";
+  answersEl.innerHTML = "";
+
+  questionEl.textContent = `Q${questionNumber}: ${question}`;
+
+  options.forEach((option) => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.className = "answer-btn";
+
+    btn.onclick = () => {
+      if (hasAnswered) return;
+      hasAnswered = true;
+
+      socket.emit("submit_answer", {
+        roomCode: currentRoom,
+        answer: option,
+      });
+
+      statusEl.textContent = "Answer submitted. Waiting for others...";
+      disableButtons();
+    };
+
+    answersEl.appendChild(btn);
+  });
+});
+
+function disableButtons() {
+  document.querySelectorAll(".answer-btn").forEach((btn) => {
+    btn.disabled = true;
+  });
+}
+
+/* =====================
+   RESULTS
+===================== */
+
+socket.on("question_results", ({ correctAnswer, scores }) => {
+  statusEl.textContent = `Correct answer: ${correctAnswer}`;
+});
+
+socket.on("quizResults", ({ finalScores }) => {
+  gameArea.style.display = "none";
+  statusEl.innerHTML = "<h2>Quiz Finished!</h2>";
+
+  finalScores.forEach((player) => {
+    const p = document.createElement("p");
+    p.textContent = `${player.name}: ${player.score}`;
+    statusEl.appendChild(p);
+  });
+});
+
+/* =====================
+   ERRORS
+===================== */
+
+socket.on("error", (err) => {
+  alert(err.message || "An error occurred");
+});
