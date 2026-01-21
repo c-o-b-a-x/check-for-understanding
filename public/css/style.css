@@ -213,3 +213,9 @@ body.light pre {
 .hidden {
   display: none;
 }
+#Hide {
+  transform: scale(0.9);
+}
+#unhide {
+  height: 100px;
+}

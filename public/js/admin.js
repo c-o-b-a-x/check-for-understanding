@@ -6,19 +6,29 @@ const socket = io();
 const createRoomBtn = document.getElementById("createRoomBtn");
 const roomCodeDisplay = document.getElementById("roomCodeDisplay");
 const startQuizBtn = document.getElementById("startQuizBtn");
+const endQuizBtn = document.getElementById("endQuizBtn");
 
 let currentRoom = null;
 window.lastQuizData = null; // store quiz data locally
 
 createRoomBtn.addEventListener("click", () => {
-  socket.emit("create_room", ({ roomCode }) => {
-    currentRoom = roomCode;
+  let customCode = "";
+  if (!roomInput.value) {
+    customCode = CMP;
+  } else {
+    customCode = roomInput.value;
+  }
 
-    // ADD THIS LINE - join the room after creating it
-    socket.emit("join_room", roomCode);
+  socket.emit("create_room", customCode, (response) => {
+    if (response.error) {
+      alert(response.error);
+      return;
+    }
 
-    roomCodeDisplay.textContent = `Room Code: ${roomCode}`;
-    alert(`Room created! Code: ${roomCode}`);
+    currentRoom = response.roomCode;
+    socket.emit("join_room", response.roomCode);
+
+    roomCodeDisplay.textContent = `Room Code: ${response.roomCode}`;
   });
 });
 
@@ -176,6 +186,17 @@ document.getElementById("themeToggle").onclick = () => {
 /* =====================
    SOCKET EVENTS
 ===================== */
+endQuizBtn.addEventListener("click", () => {
+  try {
+    socket.emit("endquiz", currentRoom);
+    roomCodeDisplay.textContent = `Ending Quiz`;
+    setTimeout(() => {
+      roomCodeDisplay.textContent = "";
+    }, 1000);
+  } catch {
+    alert("Not In A Room");
+  }
+});
 socket.on("connect", () => console.log("Connected:", socket.id));
 socket.on("disconnect", () => console.log("Disconnected"));
 socket.on("error", (err) => console.error("Socket error:", err));
@@ -219,4 +240,16 @@ socket.on("adminReport", (reports) => {
   });
 
   document.body.innerHTML += reportHTML;
+});
+
+hide_btn = document.getElementById("Hide");
+unhide_btn = document.getElementById("unhide");
+
+hide_btn.addEventListener("click", () => {
+  document.getElementById("create").classList.add("hidden");
+  unhide_btn.classList.remove("hidden");
+});
+unhide_btn.addEventListener("click", () => {
+  document.getElementById("create").classList.remove("hidden");
+  unhide_btn.classList.add("hidden");
 });

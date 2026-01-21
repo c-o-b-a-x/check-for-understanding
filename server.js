@@ -111,8 +111,18 @@ function sendQuestion(roomCode) {
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on("create_room", (callback) => {
-    const roomCode = generateRoomCode();
+  socket.on("create_room", (requestedCode, callback) => {
+    let roomCode = requestedCode?.trim().toUpperCase();
+
+    // If no code was provided, generate one
+    if (!roomCode) {
+      roomCode = generateRoomCode();
+    }
+
+    // Prevent duplicate rooms
+    if (rooms.has(roomCode)) {
+      return callback?.({ error: "Room code already exists" });
+    }
 
     rooms.set(roomCode, {
       roomCode,
@@ -121,14 +131,14 @@ io.on("connection", (socket) => {
       currentQuestion: 0,
       started: false,
       questionStartTime: null,
-      adminId: socket.id, // Track admin
+      adminId: socket.id,
     });
 
     socket.join(roomCode);
     socket.roomCode = roomCode;
-    console.log(`Room created: ${roomCode}`);
 
-    if (callback) callback({ roomCode });
+    console.log(`Room created: ${roomCode}`);
+    callback?.({ roomCode });
   });
   socket.on("submit_answer", ({ roomCode, answer }) => {
     const room = rooms.get(roomCode);
@@ -212,7 +222,14 @@ io.on("connection", (socket) => {
       players: Array.from(room.players.values()),
     });
   });
+  socket.on("endquiz", (roomCode) => {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+    if (socket.id !== room.adminId) return;
 
+    endQuiz(roomCode);
+    socket.emit("quizEnded", roomCode);
+  });
   // Handle quiz creation
   socket.on("quizDataCreated", (quizData) => {
     const roomCode = socket.roomCode;

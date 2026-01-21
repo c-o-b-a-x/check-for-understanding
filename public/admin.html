@@ -18,15 +18,17 @@
       <section class="card">
         <h3>Create Room</h3>
         <input id="roomName" placeholder="Room Name (optional)" />
+        <input id="roomInput" placeholder="Room code " />
         <button id="createRoomBtn">Create Room</button>
         <p id="roomCodeDisplay"></p>
         <div id="error" class="error hidden"></div>
         <h3>Start Quiz</h3>
         <button id="startQuizBtn">Start Quiz</button>
+        <button id="endQuizBtn">End Quiz</button>
       </section>
 
       <!-- CREATE QUIZ -->
-      <section class="card">
+      <section class="card" id="create">
         <h3>Create A Quiz</h3>
         <div id="quizInputs">
           <input type="text" class="question" placeholder="Question 1" />
@@ -50,7 +52,9 @@
           <pre class="hidden" id="written"></pre>
         </div>
         <button id="createQuizBtn">Create Quiz</button>
+        <button id="Hide">Hide Form</button>
       </section>
+      <button id="unhide" class="hidden">Show Form</button>
 
       <!-- UPLOAD QUIZ JSON -->
       <section class="card">
@@ -99,6 +103,8 @@
       </section>
     </main>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/admin.js"></script>
     <footer class="footer">
       <div class="footer-content">
         <p>Developed by Coby Hughes</p>
@@ -115,8 +121,5 @@
         </a>
       </div>
     </footer>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/admin.js"></script>
   </body>
 </html>
