@@ -8,8 +8,6 @@ admin
 
   users
 
-- allow users to write their own usernames, or if forced by admin a custom picked username, no duplicate usernames, only letters no special symbols (spaces allowed)
-
 server side
 
 - room codes (if none provided defualt to CMP)

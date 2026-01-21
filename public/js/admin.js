@@ -14,7 +14,7 @@ window.lastQuizData = null; // store quiz data locally
 createRoomBtn.addEventListener("click", () => {
   let customCode = "";
   if (!roomInput.value) {
-    customCode = CMP;
+    customCode = "CMP";
   } else {
     customCode = roomInput.value;
   }
