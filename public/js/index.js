@@ -1,6 +1,7 @@
 const socket = io();
 
 const joinBtn = document.getElementById("join_btn");
+const adminbtn = document.getElementById("admin_btn");
 const roomInput = document.getElementById("room_code_input");
 const gameArea = document.getElementById("game");
 const questionEl = document.getElementById("question");
@@ -10,6 +11,9 @@ const statusEl = document.getElementById("status");
 let currentRoom = null;
 let hasAnswered = false;
 
+adminbtn.addEventListener("click", () => {
+  window.location.href = "admin.html";
+});
 /* =====================
    JOIN ROOM
 ===================== */
