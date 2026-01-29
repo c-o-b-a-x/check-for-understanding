@@ -213,8 +213,12 @@ socket.on("room_joined", (roomCode) => {
   console.log("✅ Admin joined room:", roomCode);
 });
 
+let lastReportData = [];
+
 socket.on("adminReport", (reports) => {
   console.log("Admin Report:", reports);
+
+  lastReportData = reports;
 
   let reportHTML = "<h2>Quiz Results Report</h2>";
 
@@ -225,21 +229,26 @@ socket.on("adminReport", (reports) => {
         ${report.questions
           .map(
             (q) => `
-          <p>
-            <strong>Q${q.questionNumber}:</strong> ${q.question}<br>
-            <span style="color: ${q.isCorrect ? "green" : "red"}">
-              ${q.isCorrect ? "✓" : "✗"} Answer: ${q.playerAnswer}
-            </span>
-            ${!q.isCorrect ? `<br><small>Correct: ${q.correctAnswer}</small>` : ""}
-          </p>
-        `,
+              <p>
+                <strong>Q${q.questionNumber}:</strong> ${q.question}<br>
+                <span style="color: ${q.isCorrect ? "green" : "red"}">
+                  ${q.isCorrect ? "✓" : "✗"} Answer: ${q.playerAnswer}
+                </span>
+                ${
+                  !q.isCorrect
+                    ? `<br><small>Correct: ${q.correctAnswer}</small>`
+                    : ""
+                }
+              </p>
+            `,
           )
           .join("")}
       </div>
     `;
   });
 
-  document.body.innerHTML += reportHTML;
+  const container = document.getElementById("adminReportContainer");
+  container.innerHTML = reportHTML;
 });
 
 hide_btn = document.getElementById("Hide");
@@ -252,4 +261,36 @@ hide_btn.addEventListener("click", () => {
 unhide_btn.addEventListener("click", () => {
   document.getElementById("create").classList.remove("hidden");
   unhide_btn.classList.add("hidden");
+});
+
+const infoBtn = document.getElementById("Information");
+const infoModal = document.getElementById("infoModal");
+const closeInfoModal = document.getElementById("closeInfoModal");
+
+infoBtn.addEventListener("click", () => {
+  infoModal.classList.remove("hidden");
+});
+
+closeInfoModal.addEventListener("click", () => {
+  infoModal.classList.add("hidden");
+});
+
+infoModal.addEventListener("click", (e) => {
+  if (e.target === infoModal) {
+    infoModal.classList.add("hidden");
+  }
+});
+document.getElementById("downloadReportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(lastReportData, null, 2)], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quiz-report.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
 });
