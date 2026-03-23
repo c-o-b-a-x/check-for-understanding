@@ -35,7 +35,9 @@
       <div class="top-bar-actions">
         <a href="/join"><button id="backbtn">Join a Quiz</button></a>
         <a href="/helper"><button id="helperBtn">🛠 URL Builder</button></a>
-        <button id="themeToggle">🌙</button>
+        <button id="settingsBtn" title="Settings" aria-label="Open settings">
+          <span id="settingsIcon">⚙️</span>
+        </button>
         <button id="Information">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -232,6 +234,193 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </div>
     <div id="adminReportContainer"></div>
+
+
+    <div id="settingsOverlay"></div>
+
+    <div id="settingsDrawer">
+      <div class="sd-header">
+        <h2>⚙️ Settings</h2>
+        <button
+          class="sd-close"
+          id="closeSettingsBtn"
+          aria-label="Close settings"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sd-body">
+        <!-- Default username -->
+        <div class="sd-section">
+          <span class="sd-label">Default Username</span>
+          <div class="sd-input-row">
+            <input
+              id="setting-username"
+              type="text"
+              class="sd-input"
+              placeholder="Your name..."
+              maxlength="20"
+              autocomplete="off"
+            />
+            <button class="sd-save-btn" id="saveUsernameBtn">Save</button>
+          </div>
+          <p
+            style="font-size: 0.75rem; color: var(--sd-muted); margin: 6px 0 0"
+          >
+            Auto-fills your name when joining a room
+          </p>
+        </div>
+
+        <!-- Theme -->
+        <div class="sd-section">
+          <span class="sd-label">Theme</span>
+          <div class="sd-pills">
+            <button class="sd-pill" data-theme="light">☀️ Light</button>
+            <button class="sd-pill" data-theme="dark">🌙 Dark</button>
+            <button class="sd-pill" data-theme="system">💻 System</button>
+          </div>
+        </div>
+
+        <!-- Accent colour -->
+        <div class="sd-section">
+          <span class="sd-label">Accent Colour</span>
+          <div class="sd-swatches">
+            <button
+              class="sd-swatch"
+              data-color="#6366f1"
+              style="background: #6366f1"
+              title="Indigo"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#10b981"
+              style="background: #10b981"
+              title="Emerald"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#f59e0b"
+              style="background: #f59e0b"
+              title="Amber"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#ef4444"
+              style="background: #ef4444"
+              title="Red"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#8b5cf6"
+              style="background: #8b5cf6"
+              title="Violet"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#06b6d4"
+              style="background: #06b6d4"
+              title="Cyan"
+            ></button>
+            <button
+              class="sd-swatch"
+              data-color="#ec4899"
+              style="background: #ec4899"
+              title="Pink"
+            ></button>
+            <input
+              type="color"
+              id="customAccentPicker"
+              class="sd-color-custom"
+              title="Custom colour"
+              value="#6366f1"
+            />
+          </div>
+        </div>
+
+        <!-- Font size -->
+        <div class="sd-section">
+          <span class="sd-label">Font Size</span>
+          <div class="sd-range-row">
+            <span class="sd-size-a">A</span>
+            <input
+              type="range"
+              id="fontSizeRange"
+              class="sd-range"
+              min="14"
+              max="24"
+              step="1"
+              value="16"
+            />
+            <span class="sd-size-a big">A</span>
+            <span id="fontSizeValue" class="sd-badge">16px</span>
+          </div>
+        </div>
+
+        <!-- Confirm before submit -->
+        <div class="sd-section">
+          <div class="sd-toggle-row">
+            <div class="sd-toggle-info">
+              <strong>Confirm Before Submitting</strong>
+              <p>Ask "Are you sure?" before locking in your answer</p>
+            </div>
+            <label class="sd-switch">
+              <input type="checkbox" id="setting-confirm" />
+              <span class="sd-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Sound effects -->
+        <div class="sd-section">
+          <div class="sd-toggle-row">
+            <div class="sd-toggle-info">
+              <strong>Sound Effects</strong>
+              <p>Play a tone on correct / wrong answers</p>
+            </div>
+            <label class="sd-switch">
+              <input type="checkbox" id="setting-sounds" checked />
+              <span class="sd-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Keyboard shortcuts -->
+        <div class="sd-section">
+          <div class="sd-toggle-row">
+            <div class="sd-toggle-info">
+              <strong>Keyboard Shortcuts</strong>
+              <p>Press 1–4 to select an answer</p>
+            </div>
+            <label class="sd-switch">
+              <input type="checkbox" id="setting-keyboard" checked />
+              <span class="sd-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Show progress -->
+        <div class="sd-section">
+          <div class="sd-toggle-row">
+            <div class="sd-toggle-info">
+              <strong>Show Answer Progress</strong>
+              <p>Display how many players have answered</p>
+            </div>
+            <label class="sd-switch">
+              <input type="checkbox" id="setting-progress" checked />
+              <span class="sd-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Reset -->
+        <div class="sd-section">
+          <button id="resetSettingsBtn" class="sd-reset">
+            ↺ Reset All Settings
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/admin.js" defer></script>
