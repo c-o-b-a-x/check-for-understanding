@@ -169,6 +169,10 @@ body {
   gap: 12px;
 }
 
+.field-span-2 {
+  grid-column: 1 / -1;
+}
+
 input,
 select,
 textarea,
@@ -193,6 +197,35 @@ textarea {
 input,
 select {
   height: 42px;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 42px;
+  background-image:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.02)
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M3 5.25L7 9.25L11 5.25' stroke='%2334d399' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, right 12px center;
+  background-size: auto, 14px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+select:hover {
+  border-color: var(--border-strong);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+select option {
+  background: var(--bg-depth-3);
+  color: var(--text-primary);
 }
 
 input::placeholder,
@@ -275,10 +308,32 @@ button:disabled {
   background: var(--glass-hover);
 }
 
+button.feedback {
+  transform: none;
+  box-shadow: none;
+}
+
+button.feedback-success {
+  background: linear-gradient(135deg, var(--green) 0%, var(--accent) 100%);
+  color: #03110d;
+  border-color: transparent;
+}
+
+button.feedback-error {
+  background: linear-gradient(135deg, var(--red) 0%, #be123c 100%);
+  color: #fff5f7;
+  border-color: transparent;
+}
+
 .actions {
   display: grid;
   grid-template-columns: 1.45fr 1fr 1fr;
   gap: 8px;
+}
+
+.actions-secondary {
+  grid-template-columns: 1fr;
+  margin-top: 8px;
 }
 
 .status {
@@ -319,6 +374,32 @@ button:disabled {
   word-break: break-word;
 }
 
+.source-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hidden {
+  display: none;
+}
+
 .output {
   margin: 0;
   min-height: 220px;
@@ -334,4 +415,13 @@ button:disabled {
   line-height: 1.65;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.create-url-meta {
+  margin-top: 12px;
+}
+
+.create-url-meta span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
 }
