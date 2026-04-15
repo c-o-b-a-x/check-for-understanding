@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Site to Quiz JSON</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero">
+        <p class="eyebrow">Check For Understanding</p>
+        <h1>Site to Quiz Builder</h1>
+        <p class="subcopy">
+          Read the current page, send it through Gemini, and return quiz JSON
+          ready for the helper or admin upload flow.
+        </p>
+      </section>
+
+      <section class="helper-card">
+        <div class="helper-card-header">
+          <span class="helper-card-icon">🧠</span>
+          <h3>Generator</h3>
+        </div>
+        <div class="helper-card-body">
+          <label class="helper-field">
+            <span>Gemini API key</span>
+            <input
+              id="apiKey"
+              type="password"
+              placeholder="AIza..."
+              autocomplete="off"
+            />
+          </label>
+
+          <div class="field-row">
+            <label class="helper-field">
+              <span>Questions</span>
+              <input
+                id="questionCount"
+                type="number"
+                min="1"
+                max="15"
+                value="5"
+              />
+            </label>
+            <label class="helper-field">
+              <span>Difficulty</span>
+              <select id="difficulty">
+                <option value="mixed">Mixed</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="helper-field">
+            <span>Focus prompt</span>
+            <textarea
+              id="focusPrompt"
+              rows="3"
+              placeholder="Optional: emphasize vocabulary, key ideas, dates, cause/effect, or definitions."
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button id="generateBtn" class="helper-generate-btn">
+              Generate Quiz JSON
+            </button>
+            <button id="copyBtn" class="secondary" disabled>Copy</button>
+            <button id="downloadBtn" class="secondary" disabled>
+              Download
+            </button>
+          </div>
+
+          <div id="status" class="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="helper-card">
+        <div class="helper-card-header">
+          <span class="helper-card-icon">🔗</span>
+          <h3>Active Page</h3>
+        </div>
+        <div class="helper-card-body">
+          <div class="meta">
+            <strong>Source</strong>
+            <span id="pageMeta">Waiting for tab details...</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="helper-card">
+        <div class="helper-card-header">
+          <span class="helper-card-icon">📝</span>
+          <h3>Quiz JSON</h3>
+        </div>
+        <div class="helper-card-body">
+          <pre id="output" class="output">{
+  "quiz": []
+}</pre>
+        </div>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

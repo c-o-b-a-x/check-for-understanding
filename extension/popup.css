@@ -1,0 +1,337 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&display=swap");
+
+:root {
+  --bg-depth-0: #04060fee;
+  --bg-depth-1: #080d1c;
+  --bg-depth-2: #0c1228;
+  --bg-depth-3: #111827;
+  --glass-fill: rgba(255, 255, 255, 0.035);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --glass-hover: rgba(255, 255, 255, 0.065);
+  --accent: #10b981;
+  --accent-dim: rgba(16, 185, 129, 0.15);
+  --accent-glow: rgba(16, 185, 129, 0.25);
+  --accent-dark: #059669;
+  --accent-light: #34d399;
+  --gold: #fbbf24;
+  --red: #f43f5e;
+  --red-dim: rgba(244, 63, 94, 0.12);
+  --green: #22d3a0;
+  --text-primary: #e8edf5;
+  --text-secondary: #7a8aa8;
+  --text-muted: #3d4f6e;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lift: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --font-body: "Outfit", sans-serif;
+  --font-mono: "Fira Code", monospace;
+  --transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background-color: var(--bg-depth-0);
+  background-image:
+    radial-gradient(
+      ellipse 80% 60% at 20% -10%,
+      rgba(16, 185, 129, 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 80% 110%,
+      rgba(96, 165, 250, 0.05) 0%,
+      transparent 55%
+    );
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
+}
+
+.app {
+  width: 430px;
+  padding: 18px;
+}
+
+.hero {
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent-light);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-mono);
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary) 0%,
+    var(--accent-light) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subcopy {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+
+.helper-card {
+  background: var(--glass-fill);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 14px;
+}
+
+.helper-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+.helper-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.helper-card-header h3 {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.helper-card-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.helper-card-body {
+  padding: 16px;
+}
+
+.helper-field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.helper-field span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 0.86rem;
+}
+
+input,
+select {
+  height: 42px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  background-color: var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 82px;
+  line-height: 1.6;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+button {
+  border: none;
+  padding: 11px 12px;
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-dark) 100%
+  );
+  color: #04060f;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  font-size: 0.78rem;
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+button:hover {
+  background: linear-gradient(
+    135deg,
+    var(--accent-light) 0%,
+    var(--accent) 100%
+  );
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+button:hover::after {
+  opacity: 1;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.secondary:hover {
+  background: var(--glass-hover);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 8px;
+}
+
+.status {
+  min-height: 22px;
+  margin-top: 10px;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.status.ok {
+  color: var(--green);
+}
+
+.status.error {
+  color: var(--red);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta strong {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+}
+
+.meta span {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.output {
+  margin: 0;
+  min-height: 220px;
+  max-height: 320px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.38);
+  color: var(--accent-light);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
