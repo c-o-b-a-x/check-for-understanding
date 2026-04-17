@@ -386,6 +386,73 @@ pre {
   display: none;
 }
 
+.app-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  max-width: min(360px, calc(100vw - 32px));
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: rgba(4, 6, 15, 0.92);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: var(--transition);
+  z-index: 9999;
+}
+
+.app-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.app-toast.success {
+  border-color: rgba(34, 211, 160, 0.3);
+}
+
+.app-toast.error {
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
+.muted-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 20px;
+}
+
+.room-name {
+  font-size: 16px;
+}
+
+.room-meta {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.room-join-btn {
+  width: auto;
+  padding: 8px 16px;
+  margin: 0;
+}
+
+.status-panel {
+  text-align: center;
+  padding: 24px;
+}
+
+.status-panel h2 {
+  margin: 0 0 8px;
+}
+
+.status-panel p {
+  margin: 0;
+  opacity: 0.7;
+}
+
 #Hide {
   transform: scale(0.9);
 }
@@ -928,6 +995,56 @@ pre {
   color: var(--gold);
   border-color: var(--gold-dim);
   background: var(--gold-dim);
+}
+
+#adminReportContainer {
+  max-width: 980px;
+  margin: 24px auto 0;
+  display: grid;
+  gap: 16px;
+}
+
+.admin-report-title {
+  margin: 0;
+  text-align: center;
+}
+
+.admin-report-card {
+  background: var(--glass-fill);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.admin-report-card h3 {
+  margin: 0 0 14px;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.admin-report-question {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-report-answer {
+  margin-top: 6px;
+}
+
+.admin-report-answer.correct {
+  color: var(--green);
+}
+
+.admin-report-answer.incorrect {
+  color: var(--red);
+}
+
+.admin-report-correct {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
 }
 
 /* ===== PLAYER ITEM ===== */
@@ -2193,7 +2310,7 @@ body.dark {
 /* ── Gear button ── */
 #settingsBtn {
   width: auto;
-  margin-top: 0;
+  margin-top: 10px;
   text-transform: none;
   letter-spacing: normal;
   font-weight: normal;
@@ -2996,4 +3113,7 @@ body.dark {
     align-items: flex-start;
     gap: 10px;
   }
+}
+.index {
+  margin-right: 50px;
 }

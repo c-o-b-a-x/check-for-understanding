@@ -21,14 +21,6 @@ let currentRoom = null;
 window.lastQuizData = null;
 
 /* =====================
-   THEME
-   theme.js is loaded before this script and has already called
-   applyStored() from the inline <body> script.
-   All we need here is to wire up the toggle button.
-===================== */
-ThemeManager.bindToggle("themeToggle");
-
-/* =====================
    JOIN TOAST
 ===================== */
 let toastTimeout = null;
@@ -40,7 +32,7 @@ function showJoinToast(name) {
     toast.id = "joinToast";
     document.body.appendChild(toast);
   }
-  toast.textContent = `✅ ${name} has joined!`;
+  toast.textContent = `${name} has joined.`;
   toast.classList.add("visible");
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => toast.classList.remove("visible"), 3000);
@@ -91,116 +83,27 @@ copyLinkBtn.addEventListener("click", () => {
 });
 
 /* =====================
-   SETTINGS
-   Reuses the shared "quizSettings" localStorage key so
-   the admin, join, and helper pages stay in sync.
+   NOTICES
 ===================== */
-const SETTINGS_KEY = "quizSettings";
-const DEFAULT_SETTINGS = {
-  username: "",
-  theme: "light",
-  accent: "#6366f1",
-  fontSize: 16,
-  confirm: false,
-  sounds: true,
-  keyboard: true,
-  progress: true,
-};
+let noticeTimeout = null;
 
-function loadSettings() {
-  try {
-    return {
-      ...DEFAULT_SETTINGS,
-      ...JSON.parse(localStorage.getItem(SETTINGS_KEY)),
-    };
-  } catch {
-    return { ...DEFAULT_SETTINGS };
+function showAdminNotice(message, type = "success") {
+  let toast = document.getElementById("adminNotice");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "adminNotice";
+    toast.className = "app-toast";
+    document.body.appendChild(toast);
   }
+
+  toast.textContent = message;
+  toast.className = `app-toast ${type} show`;
+
+  if (noticeTimeout) clearTimeout(noticeTimeout);
+  noticeTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
 }
-
-function saveSettings(settings) {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-}
-
-function resolveTheme(theme) {
-  if (theme === "system") {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  }
-  return theme;
-}
-
-function applySettings(settings) {
-  const resolved = resolveTheme(settings.theme);
-  document.body.classList.remove("light", "dark");
-  document.body.classList.add(resolved);
-  document.documentElement.classList.remove("light", "dark");
-  document.documentElement.classList.add(resolved);
-  document.documentElement.style.setProperty("--accent", settings.accent);
-  document.documentElement.style.setProperty(
-    "--quiz-font-size",
-    `${settings.fontSize}px`,
-  );
-}
-
-function syncSettingsUI(settings) {
-  document
-    .querySelectorAll(".sd-pill")
-    .forEach((pill) =>
-      pill.classList.toggle("active", pill.dataset.theme === settings.theme),
-    );
-}
-
-const themeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-const settingsDrawer = document.getElementById("settingsDrawer");
-const settingsOverlay = document.getElementById("settingsOverlay");
-
-function openSettings() {
-  settingsDrawer.classList.add("open");
-  settingsOverlay.classList.add("open");
-  syncSettingsUI(loadSettings());
-}
-
-function closeSettings() {
-  settingsDrawer.classList.remove("open");
-  settingsOverlay.classList.remove("open");
-}
-
-applySettings(loadSettings());
-
-themeMediaQuery.addEventListener("change", () => {
-  const settings = loadSettings();
-  if (settings.theme === "system") applySettings(settings);
-});
-
-window.addEventListener("storage", (event) => {
-  if (event.key !== SETTINGS_KEY) return;
-  const settings = loadSettings();
-  applySettings(settings);
-  syncSettingsUI(settings);
-});
-
-document.getElementById("settingsBtn").addEventListener("click", openSettings);
-document
-  .getElementById("closeSettingsBtn")
-  .addEventListener("click", closeSettings);
-settingsOverlay.addEventListener("click", closeSettings);
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && settingsDrawer.classList.contains("open")) {
-    closeSettings();
-  }
-});
-
-document.querySelectorAll(".sd-pill").forEach((pill) => {
-  pill.addEventListener("click", () => {
-    const settings = loadSettings();
-    settings.theme = pill.dataset.theme;
-    saveSettings(settings);
-    applySettings(settings);
-    syncSettingsUI(settings);
-  });
-});
 
 /* =====================
    QUESTION BUILDER
@@ -249,7 +152,7 @@ function update_namelist() {
   const el = document.getElementById("namelist");
   if (!el) return;
   el.innerHTML = names.length
-    ? names.map((n) => `👤 ${n}`).join("<br>")
+    ? names.join("<br>")
     : "<span style='color:#94a3b8'>No players yet...</span>";
 }
 
@@ -298,7 +201,7 @@ function createRoom(customCode, roomName, isPublic, quizData) {
   const code = (customCode || "CMP").trim().toUpperCase();
   socket.emit("create_room", code, (response) => {
     if (response.error) {
-      alert("Room error: " + response.error);
+      showAdminNotice("Room error: " + response.error, "error");
       return;
     }
 
@@ -335,7 +238,8 @@ function createRoom(customCode, roomName, isPublic, quizData) {
         null,
         2,
       );
-      roomCodeDisplay.textContent += " — Quiz loaded";
+      roomCodeDisplay.textContent += " - Quiz loaded";
+      showAdminNotice("Room created and quiz loaded.");
     }
   });
 }
@@ -357,7 +261,7 @@ createRoomBtn.addEventListener("click", () => {
 ===================== */
 document.getElementById("createQuizBtn").addEventListener("click", () => {
   if (!currentRoom) {
-    alert("Create a room first!");
+    showAdminNotice("Create a room first.", "error");
     return;
   }
   const quizData = [];
@@ -373,7 +277,7 @@ document.getElementById("createQuizBtn").addEventListener("click", () => {
     quizData.push({ question, choices: { correct, ...wrongsObj } });
   });
   if (!quizData.length) {
-    alert("Add at least one valid question.");
+    showAdminNotice("Add at least one valid question.", "error");
     return;
   }
   socket.emit("quizDataUploaded", { roomCode: currentRoom, quizData });
@@ -383,7 +287,7 @@ document.getElementById("createQuizBtn").addEventListener("click", () => {
     null,
     2,
   );
-  alert("Quiz uploaded successfully!");
+  showAdminNotice("Quiz uploaded successfully.");
 });
 
 /* =====================
@@ -396,7 +300,7 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
   reader.onload = () => {
     try {
       if (!currentRoom) {
-        alert("Create a room first!");
+        showAdminNotice("Create a room first.", "error");
         return;
       }
       const raw = JSON.parse(reader.result);
@@ -411,7 +315,7 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
         null,
         2,
       );
-      alert("Quiz uploaded successfully!");
+      showAdminNotice("Quiz uploaded successfully.");
     } catch {
       document.getElementById("output").textContent = "Invalid JSON file";
     }
@@ -426,11 +330,11 @@ document.getElementById("loadJsonBtn").addEventListener("click", () => {
   const jsonText = document.getElementById("jsonTextarea").value.trim();
   const pasteOut = document.getElementById("pasteOutput");
   if (!jsonText) {
-    alert("Please paste some JSON first!");
+    showAdminNotice("Please paste some JSON first.", "error");
     return;
   }
   if (!currentRoom) {
-    alert("Create a room first!");
+    showAdminNotice("Create a room first.", "error");
     return;
   }
   try {
@@ -459,11 +363,11 @@ document.getElementById("loadJsonBtn").addEventListener("click", () => {
 ===================== */
 startQuizBtn.addEventListener("click", () => {
   if (!currentRoom) {
-    alert("Create a room first!");
+    showAdminNotice("Create a room first.", "error");
     return;
   }
   if (!window.lastQuizData) {
-    alert("Upload a quiz before starting!");
+    showAdminNotice("Upload a quiz before starting.", "error");
     return;
   }
   socket.emit("quizDataUploaded", {
@@ -484,7 +388,7 @@ let endQuizPhase = 0;
 
 endQuizBtn.addEventListener("click", () => {
   if (!currentRoom) {
-    alert("Not in a room");
+    showAdminNotice("Not in a room.", "error");
     return;
   }
 
@@ -625,7 +529,7 @@ downloadReportBtn?.addEventListener("click", () => {
 
   if (selectedType === "report-json") {
     if (!lastReportData.length) {
-      alert("No report data available yet. End the quiz first.");
+      showAdminNotice("No report data available yet. End the quiz first.", "error");
       return;
     }
     triggerDownload(
@@ -638,7 +542,7 @@ downloadReportBtn?.addEventListener("click", () => {
 
   if (selectedType === "report-csv") {
     if (!lastReportData.length) {
-      alert("No report data available yet. End the quiz first.");
+      showAdminNotice("No report data available yet. End the quiz first.", "error");
       return;
     }
     const csv = buildReportCsv(lastReportData);
@@ -646,7 +550,7 @@ downloadReportBtn?.addEventListener("click", () => {
     return;
   }
 
-  alert("Please choose a valid report format.");
+  showAdminNotice("Please choose a valid report format.", "error");
 });
 
 /* =====================
@@ -739,22 +643,25 @@ socket.on("quizAccuracy", (accuracyData) => {
 
 socket.on("adminReport", (reports) => {
   lastReportData = reports;
-  let html = "<h2>Quiz Results Report</h2>";
+  let html = "";
   reports.forEach((r) => {
-    html += `<div style="border:1px solid #ccc;padding:10px;margin:10px 0;">
-      <h3>${r.username} — Score: ${r.score}/${r.totalQuestions}</h3>
+    html += `<div class="admin-report-card">
+      <h3>${r.username} - Score: ${r.score}/${r.totalQuestions}</h3>
       ${r.questions
         .map(
           (q) => `
-        <p><strong>Q${q.questionNumber}:</strong> ${q.question}<br>
-        <span style="color:${q.isCorrect ? "green" : "red"}">${q.isCorrect ? "✓" : "✗"} ${q.playerAnswer}</span>
-        ${!q.isCorrect ? `<br><small>Correct: ${q.correctAnswer}</small>` : ""}</p>
+        <div class="admin-report-question">
+          <p><strong>Q${q.questionNumber}:</strong> ${q.question}</p>
+          <p class="admin-report-answer ${q.isCorrect ? "correct" : "incorrect"}">${q.isCorrect ? "Correct" : "Incorrect"}: ${q.playerAnswer}</p>
+          ${!q.isCorrect ? `<p class="admin-report-correct">Correct answer: ${q.correctAnswer}</p>` : ""}
+        </div>
       `,
         )
         .join("")}
     </div>`;
   });
-  document.getElementById("adminReportContainer").innerHTML = html;
+  document.getElementById("adminReportContainer").innerHTML =
+    `<h2 class="admin-report-title">Quiz Results Report</h2>${html}`;
 });
 
 socket.on("player_list", ({ players }) => {
@@ -790,10 +697,12 @@ socket.on("player_joined", ({ players }) => {
       }
       parsedQuiz = raw.quiz || raw;
     } catch (e) {
-      alert("Invalid quiz JSON in URL: " + e.message);
+      showAdminNotice("Invalid quiz JSON in URL: " + e.message, "error");
       return;
     }
   }
   const doCreate = () => createRoom(urlCode, urlName, false, parsedQuiz);
   socket.connected ? doCreate() : socket.once("connect", doCreate);
 })();
+
+

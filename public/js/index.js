@@ -11,6 +11,25 @@ const statusEl = document.getElementById("status");
 let currentRoom = null;
 let hasAnswered = false;
 let playerReportData = null;
+let appNoticeTimeout = null;
+
+function showJoinNotice(message, type = "success") {
+  let toast = document.getElementById("joinNotice");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "joinNotice";
+    toast.className = "app-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.className = `app-toast ${type} show`;
+
+  if (appNoticeTimeout) clearTimeout(appNoticeTimeout);
+  appNoticeTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2800);
+}
 
 // Detect /join/ROOMCODE in URL
 const urlParts = window.location.pathname.split("/");
@@ -357,11 +376,11 @@ adminbtn.addEventListener("click", () => {
 ═══════════════════════════════════════ */
 function joinRoom(roomCode, username) {
   if (!roomCode) {
-    alert("Enter a room code");
+    showJoinNotice("Enter a room code.", "error");
     return;
   }
   if (!username) {
-    alert("Name required");
+    showJoinNotice("Name required.", "error");
     return;
   }
   socket.emit("join_room", { roomCode, username });
@@ -386,7 +405,7 @@ function displayPublicRooms(rooms) {
   const container = document.getElementById("publicRoomsList");
   if (!container) return;
   if (!rooms || rooms.length === 0) {
-    container.innerHTML = `<p style="text-align:center;color:#94a3b8;padding:20px">No public rooms available right now</p>`;
+    container.innerHTML = `<p class="muted-empty">No public rooms available right now</p>`;
     return;
   }
   container.innerHTML = rooms
@@ -394,14 +413,14 @@ function displayPublicRooms(rooms) {
       (room) => `
     <div class="room-item">
       <div class="room-info">
-        <strong style="font-size:16px">${room.roomName}</strong>
-        <div style="font-size:13px;color:#94a3b8;margin-top:4px">
+        <strong class="room-name">${room.roomName}</strong>
+        <div class="room-meta">
           Code: ${room.roomCode} &bull; ${room.playerCount} player(s)
           ${room.hasQuiz ? "✓ Quiz Ready" : "⏳ No quiz yet"}
         </div>
       </div>
       <div class="room-actions">
-        <button onclick="quickJoinRoom('${room.roomCode}')" style="width:auto;padding:8px 16px;margin:0">Join</button>
+        <button onclick="quickJoinRoom('${room.roomCode}')" class="room-join-btn">Join</button>
       </div>
     </div>
   `,
@@ -412,7 +431,7 @@ function displayPublicRooms(rooms) {
 window.quickJoinRoom = function (roomCode) {
   const username = document.getElementById("username").value.trim();
   if (!username) {
-    alert("Please enter your name first!");
+    showJoinNotice("Please enter your name first.", "error");
     document.getElementById("username").focus();
     return;
   }
@@ -428,7 +447,7 @@ socket.on("public_rooms_updated", fetchPublicRooms);
    SOCKET EVENTS
 ═══════════════════════════════════════ */
 socket.on("connect", () => {
-  console.log("🔌 Connected:", socket.id);
+  console.log("Connected:", socket.id);
   fetchPublicRooms();
 });
 
@@ -443,7 +462,7 @@ socket.on("room_joined", (roomCode) => {
 });
 
 socket.on("roomClosed", ({ message }) => {
-  alert(message);
+  showJoinNotice(message, "error");
   window.location.href = "/";
 });
 
@@ -486,7 +505,7 @@ socket.on(
         disableButtons();
         socket.emit("submit_answer", { roomCode: currentRoom, answer: option });
         statusEl.textContent =
-          "Answer submitted — waiting for next question...";
+          "Answer submitted - waiting for next question...";
       };
 
       answersEl.appendChild(btn);
@@ -577,9 +596,9 @@ socket.on("playerReport", (report) => {
 });
 
 /* ── Errors & kick ── */
-socket.on("error", (err) => alert(err.message || "An error occurred"));
+socket.on("error", (err) => showJoinNotice(err.message || "An error occurred.", "error"));
 socket.on("kicked", () => {
-  alert("You were kicked from the room.");
+  showJoinNotice("You were kicked from the room.", "error");
   window.location.href = "/";
 });
 
@@ -598,9 +617,10 @@ if (urlParts[1] === "join" && urlParts[2]) {
   newBtn.addEventListener("click", () => {
     const username = document.getElementById("username").value.trim();
     if (!username) {
-      alert("Please enter your name");
+      showJoinNotice("Please enter your name.", "error");
       return;
     }
     joinRoom(code, username);
   });
 }
+
