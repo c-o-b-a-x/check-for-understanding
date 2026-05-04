@@ -125,9 +125,9 @@ function endQuiz(roomCode) {
 
   // Send detailed report to admin only
   const detailedReports = generateAdminReport(room);
-  io.to(room.adminId).emit("adminReport", detailedReports);
-  const accuracyData = generateQuizAccuracy(room);
-  io.to(room.adminId).emit("quizAccuracy", accuracyData);
+  io.to(room.adminId).emit("adminReport", detailedReports); // Send final accuracy to admin
+  const finalAccuracy = generateQuizAccuracy(room);
+  io.to(room.adminId).emit("quizAccuracy", finalAccuracy);
 
   // Send individual reports to each player at quiz end
   room.players.forEach((player, socketId) => {
@@ -141,7 +141,6 @@ function endQuiz(roomCode) {
 
   console.log(`Quiz ended in room ${roomCode}`);
 }
-
 // REPLACE the existing sendQuestion function with these two:
 
 function sendQuestionToPlayer(socket, room) {
@@ -224,8 +223,12 @@ io.on("connection", (socket) => {
     const room = rooms.get(roomCode);
     if (!room) return;
 
+    const connectedPlayers = Array.from(room.players.values()).filter(
+      (p) => p.connected !== false,
+    );
+
     socket.emit("player_list", {
-      players: Array.from(room.players.values()),
+      players: connectedPlayers,
     });
   });
 
@@ -333,7 +336,8 @@ io.on("connection", (socket) => {
         name: username || `Player ${room.players.size + 1}`,
         score: 0,
         answers: [],
-        currentQuestion: 0, // ADD THIS
+        currentQuestion: 0,
+        connected: true, // ← add this
       });
     }
 
@@ -407,7 +411,14 @@ io.on("connection", (socket) => {
     });
     sendQuestion(roomCode); // broadcast question 1 to everyone
   });
-
+  // ── Get per-question accuracy (admin) ──
+  socket.on("getAccuracy", ({ currentRoom }) => {
+    if (!currentRoom) return;
+    const room = rooms.get(currentRoom);
+    if (!room) return;
+    const accuracyData = generateQuizAccuracy(room);
+    io.to(room.adminId).emit("quizAccuracy", accuracyData);
+  });
   // ── Submit answer ──
   socket.on("submit_answer", ({ roomCode, answer }) => {
     const room = rooms.get(roomCode);
@@ -488,19 +499,29 @@ io.on("connection", (socket) => {
     if (roomCode) {
       const room = rooms.get(roomCode);
       if (room) {
-        room.players.delete(socket.id);
+        // Keep the player's data, only mark as disconnected
+        const player = room.players.get(socket.id);
+        if (player) {
+          player.connected = false;
+        }
+
+        // Build list of currently connected players
+        const connectedPlayers = Array.from(room.players.values()).filter(
+          (p) => p.connected !== false,
+        );
 
         io.to(roomCode).emit("player_list", {
-          players: Array.from(room.players.values()),
+          players: connectedPlayers,
         });
 
         io.to(roomCode).emit("player_left", {
           playerId: socket.id,
-          playerCount: room.players.size,
+          playerCount: connectedPlayers.length,
         });
 
+        // Delete room only if no connected players left + admin gone
         const adminStillConnected = io.sockets.sockets.has(room.adminId);
-        if (room.players.size === 0 && !adminStillConnected) {
+        if (connectedPlayers.length === 0 && !adminStillConnected) {
           rooms.delete(roomCode);
           console.log(`Room ${roomCode} deleted (empty)`);
         }

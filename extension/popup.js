@@ -1,5 +1,9 @@
+import dotenv from "dotenv";
+
+dotenv.config();
 const STORAGE_KEY = "geminiApiKey";
 const MODEL_STORAGE_KEY = "geminiModel";
+const APP_URL_STORAGE_KEY = "appUrl";
 const DEFAULT_MODEL = "gemini-2.5-flash";
 
 const apiKeyInput = document.getElementById("apiKey");
@@ -7,6 +11,7 @@ const questionCountInput = document.getElementById("questionCount");
 const difficultyInput = document.getElementById("difficulty");
 const modelSelect = document.getElementById("modelSelect");
 const focusPromptInput = document.getElementById("focusPrompt");
+const appUrlInput = document.getElementById("appUrl"); // Added for persistence
 const generateBtn = document.getElementById("generateBtn");
 const copyBtn = document.getElementById("copyBtn");
 const downloadBtn = document.getElementById("downloadBtn");
@@ -27,15 +32,42 @@ init().catch((error) => {
 });
 
 async function init() {
-  const stored = await chrome.storage.local.get([STORAGE_KEY, MODEL_STORAGE_KEY]);
+  const stored = await chrome.storage.local.get([
+    STORAGE_KEY,
+    MODEL_STORAGE_KEY,
+    APP_URL_STORAGE_KEY,
+  ]);
   if (stored?.[STORAGE_KEY]) {
     apiKeyInput.value = stored[STORAGE_KEY];
   }
+  if (stored?.[APP_URL_STORAGE_KEY] && appUrlInput) {
+    appUrlInput.value = stored[APP_URL_STORAGE_KEY];
+  }
+
   if (modelSelect) {
     modelSelect.value = stored?.[MODEL_STORAGE_KEY] || DEFAULT_MODEL;
     modelSelect.addEventListener("change", async () => {
-      await chrome.storage.local.set({ [MODEL_STORAGE_KEY]: modelSelect.value });
-      setStatus(`Model set to ${modelSelect.options[modelSelect.selectedIndex]?.text || modelSelect.value}.`);
+      await chrome.storage.local.set({
+        [MODEL_STORAGE_KEY]: modelSelect.value,
+      });
+      setStatus(
+        `Model set to ${modelSelect.options[modelSelect.selectedIndex]?.text || modelSelect.value}.`,
+      );
+    });
+  }
+
+  // Save appUrl when it loses focus (or on change)
+  if (appUrlInput) {
+    appUrlInput.addEventListener("blur", async () => {
+      await chrome.storage.local.set({
+        [APP_URL_STORAGE_KEY]: appUrlInput.value.trim(),
+      });
+    });
+    // Also persist real-time on input (optional but convenient)
+    appUrlInput.addEventListener("input", async () => {
+      await chrome.storage.local.set({
+        [APP_URL_STORAGE_KEY]: appUrlInput.value.trim(),
+      });
     });
   }
 
@@ -81,6 +113,8 @@ generateBtn.addEventListener("click", async () => {
     await chrome.storage.local.set({
       [STORAGE_KEY]: apiKey,
       [MODEL_STORAGE_KEY]: selectedModel,
+      // appUrl is already persisted on blur/input, but save again just in case
+      [APP_URL_STORAGE_KEY]: appUrlInput?.value.trim() || "",
     });
     const page = await extractPage(activeTab.id);
     const quizJson = await generateQuizJson({
@@ -299,9 +333,10 @@ function buildCreateUrl(quizJson) {
 
   const roomNameInput = document.getElementById("roomName");
   const roomCodeInput = document.getElementById("roomCode");
-  const appUrlInput = document.getElementById("appUrl");
-
-  const appUrl = String(appUrlInput?.value || "http://localhost:3000").trim();
+  // Use the globally persisted reference to appUrlInput
+  const appUrl = String(
+    appUrlInput?.value || "https://cfu.ects-cmp.com/",
+  ).trim();
   const roomName = String(roomNameInput?.value || "Generated Quiz").trim();
   const roomCode = String(roomCodeInput?.value || "")
     .trim()

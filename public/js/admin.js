@@ -1,3 +1,4 @@
+let accuracyChart = null;
 let names = [];
 const socket = io();
 let lastReportData = [];
@@ -403,6 +404,8 @@ endQuizBtn.addEventListener("click", () => {
       .forEach((el) => el.classList.remove("hidden"));
   } else {
     socket.emit("close_room", currentRoom);
+    accuracyChart?.destroy();
+    accuracyChart = null;
     currentRoom = null;
     window.lastQuizData = null;
     names = [];
@@ -521,7 +524,9 @@ function buildReportCsv(reports) {
     ];
   });
 
-  return [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n");
+  return [headers, ...rows]
+    .map((row) => row.map(escapeCsv).join(","))
+    .join("\n");
 }
 
 downloadReportBtn?.addEventListener("click", () => {
@@ -529,7 +534,10 @@ downloadReportBtn?.addEventListener("click", () => {
 
   if (selectedType === "report-json") {
     if (!lastReportData.length) {
-      showAdminNotice("No report data available yet. End the quiz first.", "error");
+      showAdminNotice(
+        "No report data available yet. End the quiz first.",
+        "error",
+      );
       return;
     }
     triggerDownload(
@@ -542,7 +550,10 @@ downloadReportBtn?.addEventListener("click", () => {
 
   if (selectedType === "report-csv") {
     if (!lastReportData.length) {
-      showAdminNotice("No report data available yet. End the quiz first.", "error");
+      showAdminNotice(
+        "No report data available yet. End the quiz first.",
+        "error",
+      );
       return;
     }
     const csv = buildReportCsv(lastReportData);
@@ -623,10 +634,20 @@ socket.on("answer_progress", ({ answered, total }) => {
 });
 
 socket.on("quizAccuracy", (accuracyData) => {
-  document.getElementById("chart")?.classList.remove("hidden");
+  const chartContainer = document.getElementById("chart");
+  if (!chartContainer) return;
+  chartContainer.classList.remove("hidden");
+
   const ctx = document.getElementById("accuracyChart");
   if (!ctx) return;
-  new Chart(ctx, {
+
+  // Destroy previous chart instance
+  if (accuracyChart) {
+    accuracyChart.destroy();
+  }
+
+  // Create fresh chart
+  accuracyChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: accuracyData.map((q) => `Q${q.questionNumber}`),
@@ -704,5 +725,3 @@ socket.on("player_joined", ({ players }) => {
   const doCreate = () => createRoom(urlCode, urlName, false, parsedQuiz);
   socket.connected ? doCreate() : socket.once("connect", doCreate);
 })();
-
-

@@ -527,6 +527,7 @@ socket.on("question_results", ({ correctAnswer, isCorrect, score }) => {
   statusEl.textContent = isCorrect
     ? `✅ Correct! Score: ${score}`
     : `❌ Wrong — correct answer: ${correctAnswer}. Score: ${score}`;
+  socket.emit("getAccuracy", { currentRoom });
 });
 
 socket.on("quiz_complete_waiting", () => {
@@ -596,7 +597,9 @@ socket.on("playerReport", (report) => {
 });
 
 /* ── Errors & kick ── */
-socket.on("error", (err) => showJoinNotice(err.message || "An error occurred.", "error"));
+socket.on("error", (err) =>
+  showJoinNotice(err.message || "An error occurred.", "error"),
+);
 socket.on("kicked", () => {
   showJoinNotice("You were kicked from the room.", "error");
   window.location.href = "/";
@@ -623,4 +626,3 @@ if (urlParts[1] === "join" && urlParts[2]) {
     joinRoom(code, username);
   });
 }
-
